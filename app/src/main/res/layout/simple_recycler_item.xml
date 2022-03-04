@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/msg_other_pic"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@mipmap/tmp_other"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/msg_other_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textColor="#000"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/msg_other_pic"
+        app:layout_constraintTop_toTopOf="parent"
+        tool:text="赵总" />
+
+    <TextView
+        android:id="@+id/msg_other_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@id/msg_other_nickname"
+        app:layout_constraintTop_toBottomOf="@id/msg_other_nickname"
+        tool:text="生娃生娃生娃" />
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/msg_other_content_img"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/msg_other_nickname"
+        app:layout_constraintTop_toBottomOf="@id/msg_other_nickname"
+        fresco:roundedCornerRadius="10dp" />
+
+
+    <ImageView
+        android:id="@+id/msg_mine_pic"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@mipmap/tmp_one"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/msg_mine_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:textColor="#000"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/msg_mine_pic"
+        app:layout_constraintTop_toTopOf="parent"
+        tool:text="赵总" />
+
+    <TextView
+        android:id="@+id/msg_mine_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@id/msg_mine_nickname"
+        app:layout_constraintTop_toBottomOf="@id/msg_mine_nickname"
+        tool:text="生娃生娃生娃" />
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/msg_mine_content_img"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/msg_mine_nickname"
+        app:layout_constraintTop_toBottomOf="@id/msg_mine_nickname"
+        fresco:roundedCornerRadius="10dp" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/other_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:constraint_referenced_ids="msg_other_pic,msg_other_nickname,msg_other_content" />
+
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/mine_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="msg_mine_pic,msg_mine_nickname,msg_mine_content" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
