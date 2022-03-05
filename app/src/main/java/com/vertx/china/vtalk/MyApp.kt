@@ -7,30 +7,21 @@ import com.easysocket.config.EasySocketOptions
 import com.easysocket.entity.SocketAddress
 import com.facebook.fresco.helper.Phoenix
 import com.vertx.china.vtalk.utilities.TcpInfoConfig
+import com.vertx.china.vtalk.utilities.notNullSingle
+import kotlin.properties.Delegates
 
 class MyApp : Application() {
+
+    companion object {
+        var instance by Delegates.notNullSingle<MyApp>()
+    }
+
     override fun onCreate() {
         super.onCreate()
 
+        instance = this
+
         Phoenix.init(this)
 
-        initEasySocket()
-    }
-
-    private fun initEasySocket() {
-        val options = EasySocketOptions.Builder()
-            .setSocketAddress(
-                SocketAddress(
-                    TcpInfoConfig.ipAddress, 32167
-                )
-            ) //主机地址
-            // 强烈建议定义一个消息协议，方便解决 socket黏包、分包的问题
-//            .setReaderProtocol(DefaultMessageProtocol()) // 默认的消息协议
-            .build()
-
-        //初始化EasySocket
-        EasySocket.getInstance().createConnection(
-            options, this
-        )
     }
 }

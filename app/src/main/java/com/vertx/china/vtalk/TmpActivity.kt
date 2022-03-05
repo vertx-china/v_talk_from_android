@@ -1,11 +1,10 @@
 package com.vertx.china.vtalk
 
 import android.os.Bundle
-import android.widget.BaseAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.chad.library.adapter.base.BaseProviderMultiAdapter
-import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.BaseDelegateMultiAdapter
+import com.chad.library.adapter.base.delegate.BaseMultiTypeDelegate
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.easysocket.EasySocket
 import com.easysocket.entity.OriginReadData
@@ -18,6 +17,7 @@ import com.squareup.moshi.Moshi
 import com.vertx.china.vtalk.databinding.ActivityTmpBinding
 import com.vertx.china.vtalk.utilities.TcpInfoConfig
 
+
 class TmpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityTmpBinding
@@ -28,7 +28,7 @@ class TmpActivity : AppCompatActivity() {
     val moshi = Moshi.Builder().build()
 
     val msgAdapter by lazy {
-        MsgAdapter(mutableListOf())
+        DelegateMultiAdapter(mutableListOf())
     }
 
 
@@ -120,50 +120,73 @@ class TmpActivity : AppCompatActivity() {
     }
 }
 
+class DelegateMultiAdapter(items: MutableList<MessageModel>) : BaseDelegateMultiAdapter<MessageModel, BaseViewHolder>(items) {
 
-class MsgAdapter(items: MutableList<MessageModel>) : BaseQuickAdapter<MessageModel, BaseViewHolder>(
-    R.layout.simple_recycler_item, items
-) {
-    override fun convert(holder: BaseViewHolder, item: MessageModel) {
-
-        holder.setGone(R.id.other_group, true)
-        holder.setGone(R.id.mine_group, true)
-
-        if (item.isMine) {
-            holder.setGone(R.id.mine_group, false)
-
-            holder.setText(R.id.msg_mine_nickname, item.nickname)
-
-            holder.setGone(R.id.msg_mine_content, true)
-            holder.setGone(R.id.msg_mine_content_img, true)
-
-            if (item.message.startsWith("http")) {
-                holder.setGone(R.id.msg_mine_content_img, false)
-                Phoenix.with(holder.getView(R.id.msg_mine_content_img) as SimpleDraweeView).load(item.message)
-            } else {
-                holder.setGone(R.id.msg_mine_content, false)
-                holder.setText(R.id.msg_mine_content, item.message)
+    init {
+        setMultiTypeDelegate(object : BaseMultiTypeDelegate<MessageModel>() {
+            override fun getItemType(data: List<MessageModel>, position: Int): Int {
+                return when (data[position].isMine) {
+                    true -> {
+                        0
+                    }
+                    false -> {
+                        1
+                    }
+                }
             }
+        })
 
-        } else {
 
-            holder.setGone(R.id.other_group, false)
+        getMultiTypeDelegate()
+            ?.addItemType(0, R.layout.simple_recycler_mine_item)
+            ?.addItemType(1, R.layout.simple_recycler_other_item)
 
-            holder.setText(R.id.msg_other_nickname, item.nickname)
+    }
 
-            holder.setGone(R.id.msg_other_content, true)
-            holder.setGone(R.id.msg_other_content_img, true)
+    override fun convert(holder: BaseViewHolder, item: MessageModel) {
+        when (holder.itemViewType) {
+            0 -> {
 
-            if (item.message.startsWith("http")) {
-                holder.setGone(R.id.msg_other_content_img, false)
-                Phoenix.with(holder.getView(R.id.msg_other_content_img) as SimpleDraweeView).load(item.message)
-            } else {
-                holder.setGone(R.id.msg_other_content, false)
-                holder.setText(R.id.msg_other_content, item.message)
+                holder.setText(R.id.msg_mine_nickname, item.nickname)
+
+                holder.setGone(R.id.msg_mine_content, true)
+                holder.setGone(R.id.msg_mine_content_img, true)
+
+                if (item.message.startsWith("http")) {
+                    val otherImg = holder.getView(R.id.msg_mine_content_img) as SimpleDraweeView
+
+                    holder.setGone(R.id.msg_mine_content_img, false)
+                    Phoenix.with(otherImg).setWidth(600)
+                        .setAspectRatio((5..10).random() / 10f).load(item.message)
+
+                } else {
+                    holder.setGone(R.id.msg_mine_content, false)
+                    holder.setText(R.id.msg_mine_content, item.message)
+                }
+            }
+            1 -> {
+
+                holder.setText(R.id.msg_other_nickname, item.nickname)
+
+                holder.setGone(R.id.msg_other_content, true)
+                holder.setGone(R.id.msg_other_content_img, true)
+
+                if (item.message.startsWith("http")) {
+
+                    val otherImg = holder.getView(R.id.msg_other_content_img) as SimpleDraweeView
+
+                    holder.setGone(R.id.msg_other_content_img, false)
+                    Phoenix.with(otherImg).setWidth(600)
+                        .setAspectRatio((5..10).random() / 10f).load(item.message)
+
+
+                } else {
+                    holder.setGone(R.id.msg_other_content, false)
+                    holder.setText(R.id.msg_other_content, item.message)
+                }
             }
         }
     }
 }
-
 
 

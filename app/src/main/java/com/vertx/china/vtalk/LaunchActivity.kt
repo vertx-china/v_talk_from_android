@@ -4,6 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.easysocket.EasySocket
+import com.easysocket.config.EasySocketOptions
+import com.easysocket.entity.SocketAddress
 import com.vertx.china.vtalk.databinding.ActivityLaunchBinding
 import com.vertx.china.vtalk.databinding.ActivityTmpBinding
 import com.vertx.china.vtalk.utilities.TcpInfoConfig
@@ -43,6 +46,9 @@ class LaunchActivity : AppCompatActivity() {
             }
 
 
+            initEasySocket()
+
+
             startActivity(Intent(this, TmpActivity::class.java))
 
             finish()
@@ -50,6 +56,24 @@ class LaunchActivity : AppCompatActivity() {
         }
 
 
+    }
+
+
+    private fun initEasySocket() {
+        val options = EasySocketOptions.Builder()
+            .setSocketAddress(
+                SocketAddress(
+                    TcpInfoConfig.ipAddress, 32167
+                )
+            ) //主机地址
+            // 强烈建议定义一个消息协议，方便解决 socket黏包、分包的问题
+//            .setReaderProtocol(DefaultMessageProtocol()) // 默认的消息协议
+            .build()
+
+        //初始化EasySocket
+        EasySocket.getInstance().createConnection(
+            options, MyApp.instance
+        )
     }
 
 }
