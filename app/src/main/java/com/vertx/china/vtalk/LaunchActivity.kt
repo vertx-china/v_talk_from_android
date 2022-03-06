@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.easysocket.EasySocket
 import com.easysocket.config.EasySocketOptions
 import com.easysocket.entity.SocketAddress
+import com.tencent.mmkv.MMKV
 import com.vertx.china.vtalk.databinding.ActivityLaunchBinding
 import com.vertx.china.vtalk.databinding.ActivityTmpBinding
 import com.vertx.china.vtalk.utilities.TcpInfoConfig
@@ -21,8 +22,28 @@ class LaunchActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
+        val address: String = MMKV.defaultMMKV().decodeString("Address", "")!!
+        val nickname: String = MMKV.defaultMMKV().decodeString("Nickname", "")!!
+
 
         binding.tvLogin.setOnClickListener {
+
+
+            if (address != "" && nickname != "") {
+                TcpInfoConfig.ipAddress = address
+                TcpInfoConfig.nickName = nickname
+
+
+                initEasySocket()
+
+
+                startActivity(Intent(this, TmpActivity::class.java))
+
+                finish()
+
+                return@setOnClickListener
+
+            }
 
 
             if (!BuildConfig.DEBUG) {
@@ -44,6 +65,9 @@ class LaunchActivity : AppCompatActivity() {
             if (binding.etNickname.text.toString().trim() != "") {
                 TcpInfoConfig.nickName = binding.etNickname.text.toString().trim()
             }
+
+            MMKV.defaultMMKV().encode("Address", binding.etAddress.text.toString().trim())
+            MMKV.defaultMMKV().encode("Nickname", binding.etNickname.text.toString().trim())
 
 
             initEasySocket()

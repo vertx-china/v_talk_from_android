@@ -6,6 +6,7 @@ import com.easysocket.config.DefaultMessageProtocol
 import com.easysocket.config.EasySocketOptions
 import com.easysocket.entity.SocketAddress
 import com.facebook.fresco.helper.Phoenix
+import com.tencent.mmkv.MMKV
 import com.vertx.china.vtalk.utilities.TcpInfoConfig
 import com.vertx.china.vtalk.utilities.notNullSingle
 import kotlin.properties.Delegates
@@ -22,6 +23,6 @@ class MyApp : Application() {
         instance = this
 
         Phoenix.init(this)
-
+        MMKV.initialize(this)
     }
 }

@@ -1,6 +1,7 @@
 package com.vertx.china.vtalk
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.chad.library.adapter.base.BaseDelegateMultiAdapter
@@ -13,6 +14,7 @@ import com.easysocket.interfaces.conn.ISocketActionListener
 import com.easysocket.utils.LogUtil
 import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.fresco.helper.Phoenix
+import com.facebook.fresco.helper.photoview.PhotoX
 import com.squareup.moshi.Moshi
 import com.vertx.china.vtalk.databinding.ActivityTmpBinding
 import com.vertx.china.vtalk.utilities.TcpInfoConfig
@@ -103,7 +105,7 @@ class TmpActivity : AppCompatActivity() {
 
 
             val sendStr = moshi.adapter(SendMessageModel::class.java)
-                .toJson(SendMessageModel(tvmsg, nickname = TcpInfoConfig.nickName))
+                .toJson(SendMessageModel("$tvmsg (From 面筋's 客户端)", nickname = TcpInfoConfig.nickName))
 
 
             // 发送
@@ -111,7 +113,7 @@ class TmpActivity : AppCompatActivity() {
                 (sendStr + "\r\n").toByteArray()
             )
 
-            msgAdapter.addData(MessageModel(message = tvmsg, nickname = TcpInfoConfig.nickName, isMine = true))
+            msgAdapter.addData(MessageModel(message = "$tvmsg (From 面筋's 客户端)", nickname = TcpInfoConfig.nickName, isMine = true))
             binding.sendRecycler.smoothScrollToPosition(msgAdapter.data.size)
 
             binding.etSengMessage.setText("")
@@ -148,12 +150,19 @@ class DelegateMultiAdapter(items: MutableList<MessageModel>) : BaseDelegateMulti
             0 -> {
 
                 holder.setText(R.id.msg_mine_nickname, item.nickname)
+//                holder.setText(R.id.msg_mine_time, item.time)
 
                 holder.setGone(R.id.msg_mine_content, true)
                 holder.setGone(R.id.msg_mine_content_img, true)
 
                 if (item.message.startsWith("http")) {
                     val otherImg = holder.getView(R.id.msg_mine_content_img) as SimpleDraweeView
+
+                    otherImg.setOnClickListener {
+                        PhotoX.with(context)
+                            .setOriginalUrl(item.message)
+                            .start()
+                    }
 
                     holder.setGone(R.id.msg_mine_content_img, false)
                     Phoenix.with(otherImg).setWidth(600)
@@ -167,6 +176,7 @@ class DelegateMultiAdapter(items: MutableList<MessageModel>) : BaseDelegateMulti
             1 -> {
 
                 holder.setText(R.id.msg_other_nickname, item.nickname)
+                holder.setText(R.id.msg_other_time, item.time?.substring(11, 16))
 
                 holder.setGone(R.id.msg_other_content, true)
                 holder.setGone(R.id.msg_other_content_img, true)
@@ -174,6 +184,12 @@ class DelegateMultiAdapter(items: MutableList<MessageModel>) : BaseDelegateMulti
                 if (item.message.startsWith("http")) {
 
                     val otherImg = holder.getView(R.id.msg_other_content_img) as SimpleDraweeView
+
+                    otherImg.setOnClickListener {
+                        PhotoX.with(context)
+                            .setOriginalUrl(item.message)
+                            .start()
+                    }
 
                     holder.setGone(R.id.msg_other_content_img, false)
                     Phoenix.with(otherImg).setWidth(600)

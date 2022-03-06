@@ -8,19 +8,30 @@
     android:layout_height="wrap_content"
     android:padding="16dp">
 
+    <TextView
+        android:id="@+id/msg_other_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/msg_other_pic"
+        app:layout_constraintStart_toStartOf="@id/msg_other_pic"
+        app:layout_constraintTop_toTopOf="parent"
+        tool:text="12:03" />
+
     <ImageView
         android:id="@+id/msg_other_pic"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:layout_marginTop="8dp"
         android:src="@mipmap/tmp_other"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/msg_other_time" />
 
     <TextView
         android:id="@+id/msg_other_nickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
         android:textColor="#000"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -30,7 +41,7 @@
 
     <TextView
         android:id="@+id/msg_other_content"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:textSize="16sp"
