@@ -42,14 +42,14 @@
 
     <TextView
         android:id="@+id/msg_mine_content"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="@id/msg_mine_nickname"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/msg_mine_nickname"
-        tool:text="生娃生娃生娃,生娃生娃生娃,生娃生娃生娃," />
+        tool:text="生娃生娃生娃,生娃生娃生娃,生娃生娃生娃,生娃生娃生娃,生娃生娃生娃," />
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/msg_mine_content_img"
@@ -59,6 +59,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/msg_mine_nickname"
         app:layout_constraintTop_toBottomOf="@id/msg_mine_nickname"
+        app:placeholderImage="@color/COLOR_BLACK_C9C9C9"
         fresco:roundedCornerRadius="10dp" />
 
 
