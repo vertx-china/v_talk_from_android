@@ -1,7 +1,6 @@
 package com.vertx.china.vtalk
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.chad.library.adapter.base.BaseDelegateMultiAdapter
@@ -25,9 +24,9 @@ class TmpActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTmpBinding
 
 
-    val data = mutableListOf<MessageModel>()
+    private val data = mutableListOf<MessageModel>()
 
-    val moshi = Moshi.Builder().build()
+    val moshi: Moshi = Moshi.Builder().build()
 
     val msgAdapter by lazy {
         DelegateMultiAdapter(mutableListOf())
@@ -148,61 +147,56 @@ class DelegateMultiAdapter(items: MutableList<MessageModel>) : BaseDelegateMulti
     override fun convert(holder: BaseViewHolder, item: MessageModel) {
         when (holder.itemViewType) {
             0 -> {
-
-                holder.setText(R.id.msg_mine_nickname, item.nickname)
-//                holder.setText(R.id.msg_mine_time, item.time)
-
-                holder.setGone(R.id.msg_mine_content, true)
-                holder.setGone(R.id.msg_mine_content_img, true)
-
-                if (item.message.startsWith("http")) {
-                    val otherImg = holder.getView(R.id.msg_mine_content_img) as SimpleDraweeView
-
-                    otherImg.setOnClickListener {
-                        PhotoX.with(context)
-                            .setOriginalUrl(item.message)
-                            .start()
-                    }
-
-                    holder.setGone(R.id.msg_mine_content_img, false)
-                    Phoenix.with(otherImg).setWidth(600)
-                        .setAspectRatio((5..10).random() / 10f).load(item.message)
-
-                } else {
-                    holder.setGone(R.id.msg_mine_content, false)
-                    holder.setText(R.id.msg_mine_content, item.message)
-                }
+                showMsgUi(
+                    holder,
+                    R.id.msg_mine_nickname,
+                    R.id.msg_mine_time,
+                    R.id.msg_mine_content,
+                    R.id.msg_mine_content_img,
+                    item
+                )
             }
             1 -> {
-
-                holder.setText(R.id.msg_other_nickname, item.nickname)
-                holder.setText(R.id.msg_other_time, item.time?.substring(11, 16))
-
-                holder.setGone(R.id.msg_other_content, true)
-                holder.setGone(R.id.msg_other_content_img, true)
-
-                if (item.message.startsWith("http")) {
-
-                    val otherImg = holder.getView(R.id.msg_other_content_img) as SimpleDraweeView
-
-                    otherImg.setOnClickListener {
-                        PhotoX.with(context)
-                            .setOriginalUrl(item.message)
-                            .start()
-                    }
-
-                    holder.setGone(R.id.msg_other_content_img, false)
-                    Phoenix.with(otherImg).setWidth(600)
-                        .setAspectRatio((5..10).random() / 10f).load(item.message)
-
-
-                } else {
-                    holder.setGone(R.id.msg_other_content, false)
-                    holder.setText(R.id.msg_other_content, item.message)
-                }
+                showMsgUi(
+                    holder,
+                    R.id.msg_other_nickname,
+                    R.id.msg_other_time,
+                    R.id.msg_other_content,
+                    R.id.msg_other_content_img,
+                    item
+                )
             }
         }
     }
+
+    private fun showMsgUi(holder: BaseViewHolder, nickname: Int, time: Int, content: Int, pic: Int, item: MessageModel) {
+        holder.setText(nickname, item.nickname)
+        holder.setText(time, item.time?.substring(11, 16))
+
+        holder.setGone(content, true)
+        holder.setGone(pic, true)
+
+        if (item.message.startsWith("http")) {
+
+            val otherImg = holder.getView(pic) as SimpleDraweeView
+
+            otherImg.setOnClickListener {
+                PhotoX.with(context)
+                    .setOriginalUrl(item.message)
+                    .start()
+            }
+
+            holder.setGone(pic, false)
+            Phoenix.with(otherImg).setWidth(600)
+                .setAspectRatio((5..10).random() / 10f).load(item.message)
+
+
+        } else {
+            holder.setGone(content, false)
+            holder.setText(content, item.message)
+        }
+    }
+
 }
 
 

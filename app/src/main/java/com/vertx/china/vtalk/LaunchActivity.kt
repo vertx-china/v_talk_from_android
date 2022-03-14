@@ -9,8 +9,8 @@ import com.easysocket.config.EasySocketOptions
 import com.easysocket.entity.SocketAddress
 import com.tencent.mmkv.MMKV
 import com.vertx.china.vtalk.databinding.ActivityLaunchBinding
-import com.vertx.china.vtalk.databinding.ActivityTmpBinding
 import com.vertx.china.vtalk.utilities.TcpInfoConfig
+import com.vertx.china.vtalk.utilities.isEmpty
 
 private lateinit var binding: ActivityLaunchBinding
 
@@ -33,53 +33,39 @@ class LaunchActivity : AppCompatActivity() {
                 TcpInfoConfig.ipAddress = address
                 TcpInfoConfig.nickName = nickname
 
-
-                initEasySocket()
-
-
-                startActivity(Intent(this, TmpActivity::class.java))
-
-                finish()
+                goToMainPage()
 
                 return@setOnClickListener
 
             }
 
-
-            if (!BuildConfig.DEBUG) {
-                if (binding.etAddress.text.toString().trim() == "") {
-                    Toast.makeText(this, "请输入ip地址", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-
-                if (binding.etNickname.text.toString().trim() == "") {
-                    Toast.makeText(this, "请输入用户昵称", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-            }
-
-            if (binding.etAddress.text.toString().trim() != "") {
+            if (binding.etAddress.isEmpty()) {
+                Toast.makeText(this, "请输入ip地址", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            } else {
                 TcpInfoConfig.ipAddress = binding.etAddress.text.toString().trim()
+                MMKV.defaultMMKV().encode("Address", binding.etAddress.text.toString().trim())
             }
 
-            if (binding.etNickname.text.toString().trim() != "") {
+            if (binding.etNickname.isEmpty()) {
+                Toast.makeText(this, "请输入用户昵称", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            } else {
                 TcpInfoConfig.nickName = binding.etNickname.text.toString().trim()
+                MMKV.defaultMMKV().encode("Nickname", binding.etNickname.text.toString().trim())
             }
 
-            MMKV.defaultMMKV().encode("Address", binding.etAddress.text.toString().trim())
-            MMKV.defaultMMKV().encode("Nickname", binding.etNickname.text.toString().trim())
-
-
-            initEasySocket()
-
-
-            startActivity(Intent(this, TmpActivity::class.java))
-
-            finish()
+            goToMainPage()
 
         }
 
 
+    }
+
+    private fun goToMainPage() {
+        initEasySocket()
+        startActivity(Intent(this, TmpActivity::class.java))
+        finish()
     }
 
 
